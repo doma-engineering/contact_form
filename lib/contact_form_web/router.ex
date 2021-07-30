@@ -21,6 +21,7 @@ defmodule ContactFormWeb.Router do
 
     scope "/" do
       pipe_through [:fetch_session, :protect_from_forgery]
+      get("/", ContactFormWeb.ContactController, :index)
       live_dashboard "/dashboard", metrics: ContactFormWeb.Telemetry
     end
   end
