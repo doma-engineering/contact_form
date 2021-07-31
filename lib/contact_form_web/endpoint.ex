@@ -70,7 +70,8 @@ defmodule ContactFormWeb.Endpoint do
       # Note that native client is very immature. If you want a more stable behaviour, you can
       # provide `:certbot` instead. Note that in this case certbot needs to be installed on the
       # host machine.
-      client: :native,
+      #mode: :manual,
+      client: :certbot,
       domains: ["contact.doma.dev"],
       emails: ["amarrindustrial+contact_doma_dev@gmail.com"],
       # By default the certs will be stored in tmp/site_encrypt_db, which is convenient for

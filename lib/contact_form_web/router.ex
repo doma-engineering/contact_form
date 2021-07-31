@@ -25,5 +25,10 @@ defmodule ContactFormWeb.Router do
       post("/", ContactFormWeb.ContactController, :index)
       live_dashboard "/dashboard", metrics: ContactFormWeb.Telemetry
     end
+  else
+    scope "/" do
+      pipe_through [:fetch_session]
+      post("/", ContactFormWeb.ContactController, :index)
+    end
   end
 end
