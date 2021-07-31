@@ -42,7 +42,8 @@ defmodule ContactForm.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:site_encrypt, "~> 0.4"},
-      {:cachex, "~> 3.4"}
+      {:cachex, "~> 3.4"},
+      {:cors_plug, "~> 2.0"}
     ]
   end
 

@@ -44,12 +44,13 @@ defmodule ContactFormWeb.Endpoint do
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library(),
-    length: 50_000
+    length: 10_000
 
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
   plug ContactFormWeb.PublicIp
+  plug CORSPlug, origin: [~r/https?:\/\/localhost:?\d*/, "https://doma.dev"]
   plug ContactFormWeb.Router
 
   @impl Phoenix.Endpoint

@@ -20,8 +20,9 @@ defmodule ContactFormWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through [:fetch_session, :protect_from_forgery]
+      pipe_through [:fetch_session]
       get("/", ContactFormWeb.ContactController, :index)
+      post("/", ContactFormWeb.ContactController, :index)
       live_dashboard "/dashboard", metrics: ContactFormWeb.Telemetry
     end
   end

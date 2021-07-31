@@ -6,13 +6,27 @@ defmodule ContactFormWeb.ContactController do
   use ContactFormWeb, :controller
   require Logger
 
-  defp handle(conn), do: conn |> json("ok")
+  defp handle(conn, _params) do
+    {:ok, data, conn} = read_body(conn)
+    true = byte_size(data) < 50_000
+    data_json = data |> String.normalize(:nfd) |> Jason.decode!()
+
+    message = """
+    From: #{data_json["name"]} <#{data_json["email"]}>
+
+    #{data_json["message"]}
+    """
+
+    File.mkdir("messages")
+    File.write("messages/#{:os.system_time(1_000_000)}.txt", message)
+    conn |> json("ok")
+  end
 
   defp reject(conn, {_, next_allowed}),
     do: conn |> put_status(429) |> json(%{"allowedFrom" => next_allowed})
 
   @spec index(Plug.Conn.t(), any()) :: Plug.Conn.t()
-  def index(conn, _params) do
+  def index(conn, params) do
     ip_maybe = Map.get(conn.assigns, :ip)
 
     if is_nil(ip_maybe) do
@@ -59,7 +73,7 @@ defmodule ContactFormWeb.ContactController do
       end)
 
     if accept do
-      handle(conn)
+      handle(conn, params)
     else
       Cachex.expire_at(:nimrod, ip, expire_at)
       reject(conn, front)

@@ -1,7 +1,6 @@
 defmodule ContactFormWeb.PublicIp do
   @moduledoc "Anonymise public IP address of request from x-forwarded-for header"
   @behaviour Plug
-  @app :contact_form
 
   # Version of https://www.cogini.com/blog/getting-the-client-public-ip-address-in-phoenix/ working with a more modern Phoenix
 
