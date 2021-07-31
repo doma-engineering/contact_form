@@ -28,3 +28,4 @@ contact_form-*.tar
 /priv/static/
 
 /tmp
+/messages
