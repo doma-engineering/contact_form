@@ -7,14 +7,10 @@ defmodule ContactForm.Application do
 
   def start(_type, _args) do
     children = [
-      # Start the Telemetry supervisor
       ContactFormWeb.Telemetry,
-      # Start the PubSub system
       {Phoenix.PubSub, name: ContactForm.PubSub},
-      # Start the Endpoint (http/https)
-      {SiteEncrypt.Phoenix, ContactFormWeb.Endpoint}
-      # Start a worker by calling: ContactForm.Worker.start_link(arg)
-      # {ContactForm.Worker, arg}
+      {SiteEncrypt.Phoenix, ContactFormWeb.Endpoint},
+      {Cachex, name: :nimrod}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

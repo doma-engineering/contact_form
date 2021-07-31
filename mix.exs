@@ -41,7 +41,8 @@ defmodule ContactForm.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:site_encrypt, "~> 0.4"}
+      {:site_encrypt, "~> 0.4"},
+      {:cachex, "~> 3.4"}
     ]
   end
 

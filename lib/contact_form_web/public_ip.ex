@@ -8,15 +8,11 @@ defmodule ContactFormWeb.PublicIp do
   @spec init(list()) :: list()
   def init(opts), do: opts
 
-  @spec anonip(
-          binary
-          | maybe_improper_list(
-              binary | maybe_improper_list(any, binary | []) | byte,
-              binary | []
-            )
-        ) :: String.t()
+  @spec anonip(any) :: binary
   def anonip(ip) do
-    :crypto.hash(:blake2b, ip) |> Base.encode64() |> String.slice(0..71)
+    :crypto.hash(:blake2b, ip |> inspect(limit: :infinity))
+    |> Base.encode64()
+    |> String.slice(0..71)
   end
 
   @spec call(Plug.Conn.t(), list()) :: Plug.Conn.t()
@@ -32,32 +28,11 @@ defmodule ContactFormWeb.PublicIp do
 
   @spec process(Plug.Conn.t(), list()) :: Plug.Conn.t()
   def process(conn, []) do
-    Plug.Conn.assign(conn, :ip, to_string(:inet.ntoa(get_peer_ip(conn))))
+    Plug.Conn.assign(conn, :ip, :inet.ntoa(get_peer_ip(conn)) |> anonip())
   end
 
   def process(conn, vals) do
-    # Rewrite standard remote_ip field with value from header
-    if Application.get_env(@app, :trust_x_forwarded_for, false) do
-      some_ip = get_ip_address(conn, vals)
-      # See https://hexdocs.pm/plug/Plug.Conn.html
-      conn = %{conn | remote_ip: some_ip}
-
-      Plug.Conn.assign(
-        conn,
-        :ip,
-        to_string(
-          if(is_public_ip(some_ip)) do
-            some_ip
-          else
-            to_string(:inet.ntoa(some_ip))
-          end
-        )
-      )
-    else
-      [some_ip | _] = vals
-      # Plug.Conn.assign(conn, :ip, to_string(:inet.ntoa(get_peer_ip(conn))))
-      Plug.Conn.assign(conn, :ip, some_ip)
-    end
+    Plug.Conn.assign(conn, :ip, get_ip_address(conn, vals) |> anonip())
   end
 
   defp get_ip_address(conn, vals)
@@ -78,8 +53,6 @@ defmodule ContactFormWeb.PublicIp do
       |> Enum.map(&parse_address(&1))
       # Elminate internal IP addreses, e.g. 192.168.1.1
       |> Enum.filter(&is_public_ip(&1))
-      # Anonymise public IPs
-      |> Enum.map(&anonip/1)
 
     case comps do
       [] -> get_peer_ip(conn)
