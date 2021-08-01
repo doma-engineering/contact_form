@@ -1,34 +1,69 @@
 # ContactForm
 
-To start your Phoenix server:
+## Paging on your local machine
 
-  * Install dependencies with `mix deps.get`
-  * Start Phoenix endpoint with `mix phx.server`
+```
+cd /tmp
+rsync -Pave 'ssh' contact.doma.dev:/home/sweater/doma/contact_form/messages .
+cd messages
+find . -type f -exec less {} \; -exec rm {} \;
+```
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Patch to send messages as E-Mails to a designated mailbox is more than welcome.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+## Run in production
+
+### Certbot
+
+```
+sudo snap install certbot --classic
+```
+
+### NGINX
+
+```
+server {
+	server_name contact.doma.dev;
+	charset utf-8;
+
+	location / {
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_pass http://127.0.0.1:4000;
+	}
+
+	listen 443 ssl;
+	ssl_certificate /home/sweater/doma/contact_form/tmp/site_encrypt_db/certbot/acme-v02.api.letsencrypt.org/config/live/contact.doma.dev/fullchain.pem;
+	ssl_certificate_key /home/sweater/doma/contact_form/tmp/site_encrypt_db/certbot/acme-v02.api.letsencrypt.org/config/live/contact.doma.dev/privkey.pem;
+	include /etc/letsencrypt/options-ssl-nginx.conf; # install Certbot!
+	ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # install Certbot
+}
+
+server {
+	if ($host = ctf.cdn.doma.dev) {
+		return 301 https://$host$request_uri;
+	} 
+
+	listen 80;
+	server_name contact.doma.dev;
+	return 404;
+}
+```
+
+### Phoenix
+
+Assuming you have set up DNS and NGINX you know it will work with certbot:
 
 ```
 # Initial setup
 $ mix deps.get --only prod
 $ MIX_ENV=prod mix compile
 
-# Compile assets
-$ npm run deploy --prefix ./assets
-$ mix phx.digest
-
-# Custom tasks (like DB migrations)
-$ MIX_ENV=prod mix ecto.migrate
+# Generate temp secret, it doesn't matter for contact_form but is required for phoenix
+export SECRET_KEY_BASE=$(mix phx.gen.secret)
 
 # Finally run the server
 $ PORT=4001 MIX_ENV=prod mix phx.server
 ```
 
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+Otherwise, take a precaution and first test that certificate acquisition works by setting mode to `:manual` in [SiteEncrypt config](https://hexdocs.pm/site_encrypt/0.4.2/SiteEncrypt.html#configure/1-options).
+When you do, you can perform a dry run of certificate acquisition.

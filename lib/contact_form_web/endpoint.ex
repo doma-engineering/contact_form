@@ -50,7 +50,7 @@ defmodule ContactFormWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug ContactFormWeb.PublicIp
-  plug CORSPlug, origin: [~r/https?:\/\/localhost:?\d*/, "https://doma.dev"]
+  plug CORSPlug, origin: [~r/https?:\/\/127\.0\.0\.1:?\d*/, ~r/https?:\/\/localhost:?\d*/, "https://doma.dev"]
   plug ContactFormWeb.Router
 
   @impl Phoenix.Endpoint
