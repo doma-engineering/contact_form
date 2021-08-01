@@ -44,8 +44,11 @@ defmodule ContactFormWeb.ContactController do
     * * *
     """)
 
+    file_name = "#{:os.system_time(1_000_000)}.txt"
+    File.mkdir("/tmp/messages")
+    File.write("/tmp/messages/#{file_name}.txt", message)
     File.mkdir("messages")
-    File.write("messages/#{:os.system_time(1_000_000)}.txt", message)
+    File.write("messages/#{file_name}.txt", message)
     conn |> json(%{"nextAllowed" => next_allowed})
   end
 

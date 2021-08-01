@@ -4,7 +4,7 @@
 
 ```
 cd /tmp
-rsync -Pave 'ssh' contact.doma.dev:/home/sweater/doma/contact_form/messages .
+rsync -Pave 'ssh' contact.doma.dev:/tmp/messages .
 cd messages
 find . -type f -exec less {} \; -exec rm {} \;
 ```
