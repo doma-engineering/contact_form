@@ -13,6 +13,14 @@ Patch to send messages as E-Mails to a designated mailbox is more than welcome.
 
 ## Run in production
 
+### Phoenix
+
+Assuming you have set up DNS and NGINX you know it will work with certbot, simply run `./run.sh`. NB! It will drop you in the interactive shell.
+
+Otherwise, consult the following sections.
+Also, take a precaution and first test that certificate acquisition works by setting mode to `:manual` in [SiteEncrypt config](https://hexdocs.pm/site_encrypt/0.4.2/SiteEncrypt.html#configure/1-options).
+When you do, you can perform a dry run of certificate acquisition.
+
 ### Certbot
 
 ```
@@ -48,22 +56,3 @@ server {
 	return 404;
 }
 ```
-
-### Phoenix
-
-Assuming you have set up DNS and NGINX you know it will work with certbot:
-
-```
-# Initial setup
-$ mix deps.get --only prod
-$ MIX_ENV=prod mix compile
-
-# Generate temp secret, it doesn't matter for contact_form but is required for phoenix
-export SECRET_KEY_BASE=$(mix phx.gen.secret)
-
-# Finally run the server
-$ PORT=4001 MIX_ENV=prod mix phx.server
-```
-
-Otherwise, take a precaution and first test that certificate acquisition works by setting mode to `:manual` in [SiteEncrypt config](https://hexdocs.pm/site_encrypt/0.4.2/SiteEncrypt.html#configure/1-options).
-When you do, you can perform a dry run of certificate acquisition.
