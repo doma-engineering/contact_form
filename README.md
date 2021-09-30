@@ -47,7 +47,7 @@ server {
 }
 
 server {
-	if ($host = ctf.cdn.doma.dev) {
+	if ($host = contact.doma.dev) {
 		return 301 https://$host$request_uri;
 	} 
 
