@@ -29,3 +29,6 @@ contact_form-*.tar
 
 /tmp
 /messages
+
+# Ignore sensetive configuration
+config/sensetive.exs
