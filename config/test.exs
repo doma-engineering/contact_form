@@ -8,3 +8,5 @@ config :contact_form, ContactFormWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :contact_form, ContactForm.Mailer, adapter: Bamboo.TestAdapter
