@@ -7,17 +7,6 @@
 # General application configuration
 import Config
 
-print_correct_command = fn
-  :prod ->
-    """
-    tail -n +2 config/sensetive.example.exs >> config/prod.secret.exs
-    """
-  mix_env ->
-    """
-    cp config/sensetive.example.exs config/#{mix_env}.secret.exs
-    """
-  end
-
 # Import sensetive configuration
 if File.exists?("config/#{Mix.env()}.secret.exs") do
   import_config "#{Mix.env()}.secret.exs"
@@ -27,7 +16,7 @@ else
   in the config directory of the project (same level with current file).
   Execute the following command from the root of the project to populate this file:
 
-  #{print_correct_command.(Mix.env())}
+  cp config/secret.exs.example config/#{Mix.env()}.secret.exs
 
   """
 end
@@ -35,10 +24,8 @@ end
 # Configures the endpoint
 config :contact_form, ContactFormWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "7inKcDnRFylgIUXEz3PwfAeDaNQv/ytSIDbA0z6nauXwviQtR0HUUOPWhEMeo2kh",
   render_errors: [view: ContactFormWeb.ErrorView, accepts: ~w(json), layout: false],
-  pubsub_server: ContactForm.PubSub,
-  live_view: [signing_salt: "6L4ErvyJ"]
+  pubsub_server: ContactForm.PubSub
 
 # Configures Elixir's Logger
 config :logger, :console,
