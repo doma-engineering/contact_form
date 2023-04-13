@@ -7,16 +7,27 @@
 # General application configuration
 import Config
 
+print_correct_command = fn
+  :prod ->
+    """
+    tail -n +2 config/sensetive.example.exs >> config/prod.secret.exs
+    """
+  mix_env ->
+    """
+    cp config/sensetive.example.exs config/#{mix_env}.secret.exs
+    """
+  end
+
 # Import sensetive configuration
-if File.exists?("config/sensetive.exs") do
-  import_config "sensetive.exs"
+if File.exists?("config/#{Mix.env()}.secret.exs") do
+  import_config "#{Mix.env()}.secret.exs"
 else
   raise """
   In order for application to work properly it is required to create sensetive.exs file
   in the config directory of the project (same level with current file).
   Execute the following command from the root of the project to populate this file:
 
-  cp config/sensetive.example.exs config/sensetive.exs
+  #{print_correct_command.(Mix.env())}
 
   """
 end
