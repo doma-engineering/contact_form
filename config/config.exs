@@ -12,7 +12,7 @@ if File.exists?("config/#{Mix.env()}.secret.exs") do
   import_config "#{Mix.env()}.secret.exs"
 else
   raise """
-  In order for application to work properly it is required to create sensetive.exs file
+  In order for application to work properly it is required to create #{Mix.env()}.secret.exs file
   in the config directory of the project (same level with current file).
   Execute the following command from the root of the project to populate this file:
 
