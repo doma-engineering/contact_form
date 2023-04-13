@@ -10,7 +10,7 @@ import Config
 print_correct_command = fn
   :prod ->
     """
-    tail -n +2 config/sensetive.example.exs >> config/prod.secret.exs
+    cp config/prod.secret.example.exs config/prod.secret.exs && tail -n +2 config/sensetive.example.exs >> config/prod.secret.exs
     """
   mix_env ->
     """

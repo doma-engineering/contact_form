@@ -31,5 +31,4 @@ contact_form-*.tar
 /messages
 
 # Ignore sensetive configuration
-config/test.secret.exs
-config/dev.secret.exs
+config/*.secret.exs
