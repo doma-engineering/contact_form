@@ -40,6 +40,8 @@ defmodule ContactFormWeb.ContactController do
       |> Email.new_contact_message()
       |> Email.deliver_now()
 
+    :ok = save_to_a_file(data_json)
+
     conn |> json(%{"nextAllowed" => next_allowed})
   end
 
@@ -161,5 +163,23 @@ defmodule ContactFormWeb.ContactController do
 
   defp tiny(ip) do
     ip |> String.slice(0..7)
+  end
+
+  defp save_to_a_file(data_json) do
+    message = """
+    From: #{data_json["name"]} <#{data_json["email"]}>
+    #{data_json["message"]}
+    """
+
+    Logger.info("""
+    #{message}
+    * * *
+    """)
+
+    file_name = "#{:os.system_time(1_000_000)}.txt"
+    File.mkdir("/tmp/messages")
+    File.write("/tmp/messages/#{file_name}", message)
+    File.mkdir("messages")
+    File.write("messages/#{file_name}", message)
   end
 end
