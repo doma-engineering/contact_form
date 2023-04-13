@@ -21,7 +21,7 @@ defmodule ContactForm.Notifiers.EmailTest do
     end
 
     test "actually delivers an email", %{email: email} do
-      assert {:ok, _} = Email.deliver(email)
+      assert {:ok, _} = Email.deliver_now(email)
 
       assert_delivered_email(email)
     end

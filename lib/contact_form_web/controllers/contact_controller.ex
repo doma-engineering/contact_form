@@ -38,7 +38,7 @@ defmodule ContactFormWeb.ContactController do
     {:ok, _} =
       data_json
       |> Email.new_contact_message()
-      |> Email.deliver()
+      |> Email.deliver_now()
 
     conn |> json(%{"nextAllowed" => next_allowed})
   end

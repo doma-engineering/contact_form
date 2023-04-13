@@ -6,6 +6,8 @@ defmodule ContactForm.Notifiers.Email do
   @subject "New contact message received"
   @us Application.compile_env(:contact_form, :deliver_emails_to)
 
+  defdelegate deliver_now(email), to: Mailer
+
   def new_contact_message(data_json) do
     new_email()
     |> to(@us)
@@ -15,8 +17,6 @@ defmodule ContactForm.Notifiers.Email do
   end
 
   def subject, do: @subject
-
-  def deliver(email), do: Mailer.deliver_now(email)
 
   defp message_body(data_json) do
     name = Map.fetch!(data_json, "name")
