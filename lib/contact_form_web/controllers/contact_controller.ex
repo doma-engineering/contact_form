@@ -6,6 +6,8 @@ defmodule ContactFormWeb.ContactController do
   use ContactFormWeb, :controller
   require Logger
 
+  alias ContactForm.Notifiers.Email
+
   @exponent_limit 20
   @messages_per_rolling_day 5
   @max_bytes 50_000
@@ -33,22 +35,13 @@ defmodule ContactFormWeb.ContactController do
   end
 
   defp handle_do(conn, _params, data_json, next_allowed) do
-    message = """
-    From: #{data_json["name"]} <#{data_json["email"]}>
+    {:ok, _} =
+      data_json
+      |> Email.new_contact_message()
+      |> Email.deliver_now()
 
-    #{data_json["message"]}
-    """
+    :ok = save_to_a_file(data_json)
 
-    Logger.info("""
-    #{message}
-    * * *
-    """)
-
-    file_name = "#{:os.system_time(1_000_000)}.txt"
-    File.mkdir("/tmp/messages")
-    File.write("/tmp/messages/#{file_name}", message)
-    File.mkdir("messages")
-    File.write("messages/#{file_name}", message)
     conn |> json(%{"nextAllowed" => next_allowed})
   end
 
@@ -170,5 +163,23 @@ defmodule ContactFormWeb.ContactController do
 
   defp tiny(ip) do
     ip |> String.slice(0..7)
+  end
+
+  defp save_to_a_file(data_json) do
+    message = """
+    From: #{data_json["name"]} <#{data_json["email"]}>
+    #{data_json["message"]}
+    """
+
+    Logger.info("""
+    #{message}
+    * * *
+    """)
+
+    file_name = "#{:os.system_time(1_000_000)}.txt"
+    File.mkdir("/tmp/messages")
+    File.write("/tmp/messages/#{file_name}", message)
+    File.mkdir("messages")
+    File.write("messages/#{file_name}", message)
   end
 end

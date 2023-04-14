@@ -5,15 +5,27 @@
 # is restricted to this project.
 
 # General application configuration
-use Mix.Config
+import Config
+
+# Import sensetive configuration
+if File.exists?("config/#{Mix.env()}.secret.exs") do
+  import_config "#{Mix.env()}.secret.exs"
+else
+  raise """
+  In order for application to work properly it is required to create #{Mix.env()}.secret.exs file
+  in the config directory of the project (same level with current file).
+  Execute the following command from the root of the project to populate this file:
+
+  cp config/secret.exs.example config/#{Mix.env()}.secret.exs
+
+  """
+end
 
 # Configures the endpoint
 config :contact_form, ContactFormWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "7inKcDnRFylgIUXEz3PwfAeDaNQv/ytSIDbA0z6nauXwviQtR0HUUOPWhEMeo2kh",
   render_errors: [view: ContactFormWeb.ErrorView, accepts: ~w(json), layout: false],
-  pubsub_server: ContactForm.PubSub,
-  live_view: [signing_salt: "6L4ErvyJ"]
+  pubsub_server: ContactForm.PubSub
 
 # Configures Elixir's Logger
 config :logger, :console,

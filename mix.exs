@@ -7,7 +7,7 @@ defmodule ContactForm.MixProject do
       version: "0.1.0",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -20,7 +20,7 @@ defmodule ContactForm.MixProject do
   def application do
     [
       mod: {ContactForm.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :bamboo, :bamboo_smtp]
     ]
   end
 
@@ -43,7 +43,9 @@ defmodule ContactForm.MixProject do
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:site_encrypt, "~> 0.4"},
       {:cachex, "~> 3.4"},
-      {:cors_plug, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:bamboo, "~> 2.2.0"},
+      {:bamboo_smtp, "~> 4.2"}
     ]
   end
 
